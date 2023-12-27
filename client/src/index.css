@@ -369,6 +369,12 @@ input,select,textarea{
     color: var(--color-primary);
 }
 
+.ql-editor{
+  overflow: scroll;
+  background: var(--color-white);
+  height: 10rem !important;
+}
+
 /* ==============AUTHORS============ */
 
 .authors-container{
