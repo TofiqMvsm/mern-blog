@@ -2,6 +2,9 @@ const HttpError = require("../models/errorModel");
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
+
+
 //  ========================== Register a new user
 // POST : /api/users/register
 // UNPROTECTED
@@ -43,6 +46,9 @@ const registerUser = async (req, res, next) => {
   }
 };
 
+
+
+
 //  ========================== Login user
 // POST : /api/users/login
 // UNPROTECTED
@@ -76,26 +82,56 @@ const loginUser = async (req, res, next) => {
   }
 };
 
+
+
+
 //  ========================== User Profile
 // POST : /api/users/:id
 // PROTECTED
 const getUser = async (req, res, next) => {
-  res.json("User Profile");
+  try{
+    const {id} = req.params
+    const user = await User.findById(id).select("-password")
+    if(!user){
+        return next(new HttpError("User not found",404))
+    }
+    res.status(200).json(user)
+  }
+  catch(error){
+    return next(new HttpError(error))
+  }
 };
 
+
+
+
 //  ========================== Edit User
-// POST : /api/users/edit-user
+// PATCH : /api/users/edit-user
 // PROTECTED
 const editUser = async (req, res, next) => {
   res.json("Edit User details");
 };
 
+
+
+
+
 //  ========================== Get All Authors
 // POST : /api/users/authors
 // UNPROTECTED
 const getAuthors = async (req, res, next) => {
-  res.json("Get all authors/users");
+  try{
+    const authors = await User.find().select("-password")
+    res.json(authors)
+  }
+  catch(error){
+    return next(new HttpError(error))
+  }
 };
+
+
+
+
 
 //  ========================== Change Avatar
 // POST : /api/users/change-avatar
@@ -103,6 +139,9 @@ const getAuthors = async (req, res, next) => {
 const changeAvatar = async (req, res, next) => {
   res.json("Change User Avatar");
 };
+
+
+
 
 module.exports = {
   registerUser,
