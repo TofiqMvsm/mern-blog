@@ -2,7 +2,9 @@ const HttpError = require("../models/errorModel");
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
+const fs = require('fs');
+const path = require("path");
+const {v4 : uuid} = require('uuid')
 
 
 //  ========================== Register a new user
@@ -137,7 +139,49 @@ const getAuthors = async (req, res, next) => {
 // POST : /api/users/change-avatar
 // PROTECTED
 const changeAvatar = async (req, res, next) => {
-  res.json("Change User Avatar");
+  try{
+    if(!req.files.avatar){
+        return next(new HttpError("Please choose an image",422))
+    }
+    console.log("a");
+    //find user from database
+    const user = await User.findById(req.user.id)
+    //delete avatar if exist
+    
+    if(user.avatar){
+        fs.unlink(path.join(__dirname,'..','uploads',user.avatar),(err)=>{
+            if(err){
+                return next(new HttpError(err))
+            }
+        })
+    }
+   
+    
+    const {avatar} = req.files
+    if(avatar.size > 500000){
+        return next(new HttpError("Profile picture is too big.Should be less than 500kb",422))
+    }
+
+    let fileName;
+    fileName = avatar.name;
+    let spilettedFilename = fileName.split('.')
+    let newFilename = spilettedFilename[0] + uuid() + "." + spilettedFilename[spilettedFilename.length - 1]
+    avatar.mv(path.join(__dirname,'..','uploads',newFilename), async (err)=>{
+      if(err){
+        return next(new HttpError(err))
+      }
+
+      const updatedAvatar = await User.findByIdAndUpdate(req.user.id,{avatar : newFilename},{new : true})
+      if(!updatedAvatar){
+        return next(new HttpError("Avatar couldnt changed",422))
+      }
+      res.status(200).json(updatedAvatar)
+    })
+
+  }
+  catch(error){
+    return next(new HttpError(error))
+  }
 };
 
 
