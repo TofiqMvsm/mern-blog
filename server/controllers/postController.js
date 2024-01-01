@@ -11,7 +11,43 @@ const fs = require('fs')
 // Protected
 
 const createPost = async (req,res,next)=>{
-    res.json("Create Post")
+    try{
+        let {title,category,description} = req.body
+        if(!title || !category || !description || !req.files){
+            return next(new HttpError('Fill in all fields and choose thumbnail',422))
+        }
+        const {thumbnail} = req.files
+        // Check file size
+        if(thumbnail.size > 2000000){
+            return next(new HttpError("Thumbnail too big.Shoud be less than 2mb",422))
+        }
+
+        let fileName = thumbnail.name
+        let splittedName = fileName.split('.')
+        let newFileName = splittedName[0] + uuid() + '.' + splittedName[splittedName.length-1]
+        thumbnail.mv(path.join(__dirname,'..','/uploads',newFileName),async (err)=>{
+            if(err){
+                return next(new HttpError(err))
+            }else{
+                const newPost = await Post.create({title,category,description,thumbnail : newFileName,creator : req.user.id})
+                if(!newPost){
+                    return next(new HttpError("Post couldn't created",422))
+                }
+                // Find user to update user's post
+            const currentUser = await User.findById(req.user.id)
+            const userPosts = currentUser.posts + 1
+            await User.findByIdAndUpdate(req.user.id,{posts : userPosts})
+
+            res.status(201).json(newPost)
+
+            }
+            
+        })
+
+    }
+    catch(err){
+        return next(new HttpError(err))
+    }
 }
 
 
