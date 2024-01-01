@@ -108,7 +108,14 @@ const getCatPosts = async (req,res,next)=>{
 // Unprotected
 
 const getUserPosts = async (req,res,next)=>{
-    res.json("Get User Posts")
+        try{
+            const {id} = req.params
+            const posts = await Post.find({creator : id}).sort({createdAt : -1})
+            res.status(200).json(posts)
+        }
+        catch(err){
+            
+        }
 }
 
 
@@ -118,7 +125,52 @@ const getUserPosts = async (req,res,next)=>{
 // Protected
 
 const editPost = async (req,res,next)=>{
-    res.json("Edit Post")
+    try{
+        let fileName;
+        let newFileName;
+        let updatedPost;
+        const postId = req.params.id
+        let {title,description,category} = req.body
+        if(!title || !category || description.length<12){
+            return next(new HttpError('Fill in all fields',422))
+        }
+        if(!req.files){
+            updatedPost = await Post.findByIdAndUpdate(postId,{title,description,category},{new : true})
+        }
+        else{
+            const oldPost = await Post.findById(postId);
+            // delete old thumbnail
+            fs.unlink(path.join(__dirname,'..','uploads',oldPost.thumbnail),async (err)=>{
+                if(err){
+                    return next(new HttpError(err))
+                }
+               
+            })
+             // upload new thumbnail
+             const {thumbnail} = req.files
+             if(thumbnail.size > 2000000){
+                 return next(new HttpError("Thumbnail too big.Should be less than 2mb"))
+             }
+             fileName = thumbnail.name
+             let splittedName = fileName.split('.')
+             newFileName = splittedName[0] + uuid() + '.' +  splittedName[splittedName.length - 1]
+             thumbnail.mv(path.join(__dirname,'..',"uploads",newFileName), async (err)=>{
+                 if(err){
+                     return next(new HttpError(err))
+                 }
+             })
+                 updatedPost = await Post.findByIdAndUpdate(postId,{title,category,description,thumbnail : newFileName}, {new : true})
+                 
+        }
+
+        if(!updatedPost){
+            return next(new HttpError("Couldn't created post",400))
+        }
+        res.status(200).json(updatedPost)
+    }
+    catch(err){
+        return next(new HttpError(err))
+    }
 }
 
 
