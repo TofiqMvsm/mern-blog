@@ -56,7 +56,13 @@ const createPost = async (req,res,next)=>{
 // Unprotected
 
 const getAllPosts = async (req,res,next)=>{
-    res.json("Get All Posts")
+    try{
+        const posts = await Post.find().sort({updatedAt : -1})
+        res.status(200).json(posts)
+    }
+    catch(err){
+        return next(new HttpError(err))
+    }
 }
 
 
@@ -65,7 +71,17 @@ const getAllPosts = async (req,res,next)=>{
 // Unprotected
 
 const getPost = async (req,res,next)=>{
-    res.json("Get Post")
+    try{
+        const {id} = req.params
+        const post = await Post.findById(id)
+        if(!post){
+            return next(new HttpError("There is not post with this id",422))
+        }
+        res.status(200).json(post)
+    }
+    catch(err){
+        return next(new HttpError(err))
+    }
 }
 
 
@@ -75,7 +91,14 @@ const getPost = async (req,res,next)=>{
 // Unprotected
 
 const getCatPosts = async (req,res,next)=>{
-    res.json("Get posts by category")
+    try{
+        const {category} = req.params
+    const posts = await Post.find({category})
+    res.status(200).json(posts)
+    }
+    catch(err){
+        return next(new HttpError(err))
+    }
 }
 
 
