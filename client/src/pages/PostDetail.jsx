@@ -1,8 +1,22 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import PostAuthor from "../components/PostAuthor";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Thumbnail from "../images/blog22.jpg";
+import { UserContext } from "../context/UserContext";
+
 const PostDetail = () => {
+
+  const {currentUser} = useContext(UserContext)
+  const token = currentUser?.token
+  const navigate = useNavigate()
+
+  //redirect to login page for any user who isn't logged in
+  useEffect(()=>{
+    if(!token){
+      navigate('/login')
+    }
+  },[])
+
   return (
     <section className="post-detail">
       <div className="container post-detail-container">
