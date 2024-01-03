@@ -6,16 +6,17 @@ const PostItem = ({
   postID,
   category,
   title,
-  desc,
+  description,
   authorID,
   thumbnail,
+  createdAt
 }) => {
-  const shortDesc = desc.length > 145 ? desc.substr(0,145) + '...' : desc
+  const shortDesc = description.length > 145 ? description.substr(0,145) + '...' : description
   const shortTitle = title.length > 30 ? title.substr(0,30) + '...' : title
   return (
     <article className="post">
       <div className="post-thumbnail">
-        <img src={thumbnail} alt={title} />
+        <img src={`${process.env.REACT_APP_ASSETS_URL}/uploads/${thumbnail}`} alt={title} />
       </div>
       <div className="post-content">
         <Link to={`/posts/${postID}`}>
@@ -23,7 +24,7 @@ const PostItem = ({
         </Link>
         <p>{shortDesc}</p>
         <div className="post-footer">
-          <PostAuthor />
+          <PostAuthor authorID={authorID} createdAt={createdAt}/>
           <Link to={`/posts/categories/${category}`} className="btn category">{category}</Link>
         </div>
       </div>
