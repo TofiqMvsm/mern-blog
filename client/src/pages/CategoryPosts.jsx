@@ -1,27 +1,58 @@
-import React, { useState } from 'react'
-import { DUMMY_POSTS } from '../data'
+import React, { useEffect, useState } from 'react'
 import PostItem from '../components/PostItem'
+import axios from 'axios';
+import Loader from "../components/Loader"
+import { useParams } from 'react-router-dom';
 const CategoryPosts = () => {
-  const [posts,setPosts] = useState(DUMMY_POSTS)
+  const {category} = useParams()
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setisLoading] = useState(false);
+  useEffect(() => {
+    const fetchPost = async () => {
+      setisLoading(true);
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/posts/categories/${category}`
+        );
+        
+        setPosts(response?.data);
+      } catch (err) {
+        console.log(err);
+      }
+      setisLoading(false);
+    };
+    fetchPost();
+  }, [category]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
-    <section className='posts'>
-      {posts.length > 0 ? <div className="container posts-container">
-      {posts.map(
-        ({ id, thumbnail, category, title, desc, authorID }) => (
-          <PostItem
-            key={id}
-            postID={id}
-            thumbnail={thumbnail}
-            desc={desc}
-            authorID={authorID}
-            title={title}
-            category={category}
-          />
-        )
+    <section className="posts">
+      {posts.length > 0 ? (
+        <div className="container posts-container">
+          {posts.map(
+            ({ _id : id, thumbnail, category, title, description, creator : authorID, createdAt}) => (
+              <PostItem
+                key={id}
+                postID={id}
+                thumbnail={thumbnail}
+                description={description}
+                authorID={authorID}
+                title={title}
+                category={category}
+                createdAt={createdAt}
+                
+              />
+            )
+          )}
+        </div>
+      ) : (
+        <h2 className="center">No Posts Found</h2>
       )}
-      </div> : <h2 className="center">No Posts Found</h2>}
     </section>
-  )
+  );
 }
 
 export default CategoryPosts

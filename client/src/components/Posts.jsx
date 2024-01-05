@@ -13,7 +13,7 @@ const Posts = () => {
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/posts`
         );
-        
+
         setPosts(response?.data);
       } catch (err) {
         console.log(err);
@@ -32,7 +32,15 @@ const Posts = () => {
       {posts.length > 0 ? (
         <div className="container posts-container">
           {posts.map(
-            ({ _id : id, thumbnail, category, title, description, creator : authorID, createdAt}) => (
+            ({
+              _id: id,
+              thumbnail,
+              category,
+              title,
+              description,
+              creator: authorID,
+              createdAt,
+            }) => (
               <PostItem
                 key={id}
                 postID={id}
@@ -42,7 +50,6 @@ const Posts = () => {
                 title={title}
                 category={category}
                 createdAt={createdAt}
-                
               />
             )
           )}
