@@ -22,24 +22,24 @@ const Header = () => {
         </Link>
         {currentUser?.id && isNavShowing && <ul className="nav-menu">
           <li>
-            <Link to="/profile/asdadsad" onClick={closeNavHandler}>Ernest Achiver</Link>
+            <Link to={`/profile/${currentUser.id}`} onClick={closeNavHandler}>{currentUser.name}</Link>
           </li>
           <li>
             <Link to="/create" onClick={closeNavHandler}>Create Post</Link>
           </li>
           <li>
-            <Link to="authors" onClick={closeNavHandler}>Authors</Link>
+            <Link to="/authors" onClick={closeNavHandler}>Authors</Link>
           </li>
           <li>
-            <Link to="logout" onClick={closeNavHandler}>Logout</Link>
+            <Link to="/logout" onClick={closeNavHandler}>Logout</Link>
           </li>
         </ul> }
         {!currentUser?.id && isNavShowing && <ul className="nav-menu">
           <li>
-            <Link to="authors" onClick={closeNavHandler}>Authors</Link>
+            <Link to="/authors" onClick={closeNavHandler}>Authors</Link>
           </li>
           <li>
-            <Link to="logout" onClick={closeNavHandler}>Logout</Link>
+            <Link to="/logout" onClick={closeNavHandler}>Logout</Link>
           </li>
         </ul> }
         <button className="nav_toogle-btn" onClick={()=>setIsNavShowing(!isNavShowing)}>

@@ -3,12 +3,13 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { UserContext } from '../context/UserContext'
 import { useNavigate } from 'react-router-dom'
+import axios from "axios"
 const CreatePost = () => {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Uncategorized");
   const [description, setDescription] = useState("");
   const [thumbnail, setThumbnail] = useState("");
-
+  const [error,setError] = useState(null)
 
   const {currentUser} = useContext(UserContext)
   const token = currentUser?.token
@@ -54,12 +55,35 @@ const CreatePost = () => {
     "Weather",
   ];
 
+
+  const createPost = async (e)=>{
+    e.preventDefault()
+    const postData = new FormData()
+    postData.set('title',title)
+    postData.set('category',category)
+    postData.set('description',description)
+    postData.set('thumbnail',thumbnail)
+
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/posts`,postData, {withCredentials : true ,headers : {Authorization : `Bearer ${token}`}})
+      if(response.status == 201){
+        return navigate('/')
+      }
+    } catch (error) {
+       setError(error.response.data.message)
+    }
+
+
+  }
+
+
+
   return (
     <section className="create-post">
       <div className="container">
         <h2>Create Post</h2>
-        <p className="form-error-message">This is an error message</p>
-        <form className="form create-post-form">
+       {error && <p className="form-error-message">{error}</p>}
+        <form className="form create-post-form" onSubmit={createPost}>
           <input
             type="text"
             placeholder="Title"
