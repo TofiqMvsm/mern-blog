@@ -5,7 +5,6 @@ import axios from "axios";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
-  console.log(posts);
   const [isLoading, setisLoading] = useState(false);
   useEffect(() => {
     const fetchPost = async () => {
@@ -14,7 +13,7 @@ const Posts = () => {
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/posts`
         );
-        console.log(response.data)
+        
         setPosts(response?.data);
       } catch (err) {
         console.log(err);

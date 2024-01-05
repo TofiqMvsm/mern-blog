@@ -10,17 +10,17 @@ import ru from 'javascript-time-ago/locale/ru.json'
 
 
 TimeAgo.addDefaultLocale(en)
-TimeAgo.addDefaultLocale(ru)
+TimeAgo.addLocale(ru)
 
 
 const PostAuthor = ({createdAt,authorID}) => {
   const [author,setAuthor] = useState({})
-  console.log(author.avatar)
+
   useEffect(()=>{
     const getAuthor = async()=>{
       try{
         const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/users/${authorID}`)
-        console.log(response.data)
+       
         setAuthor(response?.data)
       }
       catch(err){
