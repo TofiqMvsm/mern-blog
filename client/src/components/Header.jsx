@@ -1,6 +1,6 @@
 import React, { useState,useContext } from "react";
 import { Link } from "react-router-dom";
-import logo from "../images/avatar1.jpg";
+import logo from "../images/logo.png";
 import { FaBars } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
 import { UserContext } from "../context/UserContext";
@@ -9,11 +9,13 @@ const Header = () => {
   const {currentUser} = useContext(UserContext)
   const closeNavHandler = ()=>{
     if(window.innerWidth < 800){
-      setIsNavShowing(true)
-    }else{
       setIsNavShowing(false)
+    }else{
+      setIsNavShowing(true)
     }
   }
+
+
   return (
     <nav>
       <div className="container nav-container">
@@ -39,7 +41,7 @@ const Header = () => {
             <Link to="/authors" onClick={closeNavHandler}>Authors</Link>
           </li>
           <li>
-            <Link to="/logout" onClick={closeNavHandler}>Logout</Link>
+            <Link to="/login" onClick={closeNavHandler}>Login</Link>
           </li>
         </ul> }
         <button className="nav_toogle-btn" onClick={()=>setIsNavShowing(!isNavShowing)}>

@@ -55,7 +55,7 @@ const Login = () => {
           />
 
           <button type="submit" className="btn primary">
-            Register
+            Sign In
           </button>
         </form>
         <small>

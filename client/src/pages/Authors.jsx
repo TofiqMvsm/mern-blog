@@ -39,7 +39,7 @@ if(isLoading){
           authors.map(({_id: id,avatar,name,posts})=>{
             return <Link key={id} to={`/posts/users/${id}`} className='author'>
               <div className='author-avatar'>
-                <img src={`${process.env.REACT_APP_ASSETS_URL}/uploads/${avatar}`} alt={`Image of ${name}`} />
+                <img src={`${process.env.REACT_APP_ASSETS_URL}/uploads/${avatar}`} alt={`${name}`} />
 
               </div>
               <div className="author-info">
