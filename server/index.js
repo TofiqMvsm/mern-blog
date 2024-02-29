@@ -21,7 +21,7 @@ app.use('/api/posts',postRoutes)
 app.use(notFound)
 app.use(errorHandler)
 
-connect(process.env.MONGO_URL).then(app.listen(5000,()=>{
+connect(process.env.MONGO_URL).then(app.listen(process.env.PORT,()=>{
     console.log(`Hello from the server on PORT ${process.env.PORT}`)
 })).catch(error=>{
     console.log(error)
