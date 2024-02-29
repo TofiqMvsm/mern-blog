@@ -10,7 +10,7 @@ const { notFound,errorHandler } = require('./middleware/errorMiddleware')
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended : true}))
-app.use(cors({credentials : true,origin : "https://mern-blog-aeqo.onrender.com"}))
+app.use(cors({credentials : true,origin : "https://mern-blog-1-73kc.onrender.com"}))
 app.use(upload())
 app.use('/uploads',express.static(__dirname + "/uploads"))
 
